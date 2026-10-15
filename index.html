@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Learning Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #173b70;
+            color: white;
+            padding: 24px 8%;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        nav {
+            background: #102c54;
+            padding: 14px 8%;
+            color: white;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border-top: 4px solid #2563eb;
+        }
+
+        .card h3 {
+            color: #173b70;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>University Learning Portal</h1>
+        <p>Learn, collaborate and achieve more.</p>
+    </header>
+
+    <nav>
+        Home &nbsp; | &nbsp; Courses &nbsp; | &nbsp;
+        Faculty &nbsp; | &nbsp; Assignments &nbsp; | &nbsp; Exams
+    </nav>
+
+    <main>
+        <section class="welcome">
+            <h2>Welcome to Your Learning Dashboard</h2>
+            <p>
+                Access course information, faculty profiles,
+                learning resources and academic announcements
+                in one place.
+            </p>
+            <p><strong>Release:</strong> v1.0</p>
+            <p><strong>Status:</strong> Application available</p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Courses</h3>
+                <p>Software Engineering, Cloud Computing,
+                Data Mining and Artificial Intelligence.</p>
+            </article>
+
+            <article class="card">
+                <h3>Faculty Profiles</h3>
+                <p>View faculty information and academic
+                guidance.</p>
+            </article>
+
+            <article class="card">
+                <h3>Learning Resources</h3>
+                <p>Access notes, presentations and study
+                materials.</p>
+            </article>
+
+            <article class="card">
+                <h3>Assignments</h3>
+                <p>Check assignment announcements and
+                submission deadlines.</p>
+            </article>
+
+            <article class="card">
+                <h3>Examination Schedule</h3>
+                <p>View examination timetables and academic
+                notifications.</p>
+            </article>
+
+            <article class="card">
+                <h3>Release Information</h3>
+                <p>Versioned releases are managed through
+                the CI/CD pipeline.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        University Learning Portal | DevOps CI/CD Project
+    </footer>
+</body>
+</html>
