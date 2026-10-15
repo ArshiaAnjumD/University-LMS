@@ -6,12 +6,12 @@ pipeline {
         string(
             name: 'VERSION',
             defaultValue: 'v1.0',
-            description: 'Docker image release version'
+            description: 'Version tag for the release'
         )
         booleanParam(
             name: 'SIMULATE_FAILURE',
             defaultValue: false,
-            description: 'Demonstrate automatic rollback'
+            description: 'Test automatic rollback'
         )
     }
 
@@ -19,7 +19,9 @@ pipeline {
         IMAGE = 'arshiaanjumd/university-lms'
         DEPLOYMENT = 'university-lms'
         CONTAINER_NAME = 'university-lms'
+
         DOCKER_EXE = 'C:\\Users\\arshi\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+        KUBECTL_EXE = 'C:\\Users\\arshi\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe'
     }
 
     stages {
@@ -75,43 +77,49 @@ pipeline {
                 )]) {
                     script {
                         def previousImage = bat(
-                            script: '@echo off & kubectl get deployment university-lms -o=jsonpath="{.spec.template.spec.containers[0].image}"',
+                            script: '@echo off & "%KUBECTL_EXE%" get deployment university-lms -o=jsonpath="{.spec.template.spec.containers[0].image}"',
                             returnStdout: true
                         ).trim()
 
                         if (!previousImage) {
-                            error('Unable to identify previous deployment image')
+                            error('Could not identify the previous stable image')
                         }
 
                         try {
                             if (params.SIMULATE_FAILURE) {
                                 bat '''
-                                    kubectl set image deployment/university-lms university-lms=%IMAGE%:%VERSION%-broken
+                                    "%KUBECTL_EXE%" set image deployment/university-lms university-lms=%IMAGE%:%VERSION%-broken
                                 '''
                             } else {
                                 bat '''
-                                    kubectl set image deployment/university-lms university-lms=%IMAGE%:%VERSION%
+                                    "%KUBECTL_EXE%" set image deployment/university-lms university-lms=%IMAGE%:%VERSION%
                                 '''
                             }
 
                             bat '''
-                                kubectl rollout status deployment/university-lms --timeout=120s
-                                kubectl get pods
-                                kubectl get service university-lms-service
+                                "%KUBECTL_EXE%" rollout status deployment/university-lms --timeout=120s
+                                if errorlevel 1 exit /b 1
+
+                                "%KUBECTL_EXE%" get pods
+                                "%KUBECTL_EXE%" get service university-lms-service
                             '''
 
-                            echo 'Deployment and health verification succeeded.'
+                            echo 'Deployment and verification successful.'
 
                         } catch (err) {
-                            echo "Release failed. Rolling back from ${previousImage}"
+                            echo "Deployment failed. Rolling back to previous stable revision: ${previousImage}"
 
                             bat '''
-                                kubectl rollout undo deployment/university-lms
-                                kubectl rollout status deployment/university-lms --timeout=120s
-                                kubectl get pods
+                                "%KUBECTL_EXE%" rollout undo deployment/university-lms
+                                if errorlevel 1 exit /b 1
+
+                                "%KUBECTL_EXE%" rollout status deployment/university-lms --timeout=120s
+                                if errorlevel 1 exit /b 1
+
+                                "%KUBECTL_EXE%" get pods
                             '''
 
-                            error('Release failed. Automatic rollback was attempted.')
+                            error('Release failed. Rollback was attempted.')
                         }
                     }
                 }
